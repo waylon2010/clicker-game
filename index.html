@@ -199,6 +199,7 @@
     .side-section:last-of-type {
       flex: 0;
       overflow: visible;
+      max-height: none;
     }
 
     .section-title {
@@ -285,6 +286,11 @@
       letter-spacing: 1px;
       text-transform: uppercase;
       cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .reset-btn:hover {
+      background: linear-gradient(135deg, #a03520, #c04620);
     }
 
     .floating {
@@ -298,6 +304,30 @@
       user-select: none;
       white-space: nowrap;
       will-change: transform, opacity;
+    }
+
+    .sound-toggle {
+      position: absolute;
+      bottom: 16px;
+      right: 16px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: rgba(255, 215, 90, 0.1);
+      border: 2px solid rgba(255, 215, 90, 0.5);
+      color: var(--gold);
+      cursor: pointer;
+      font-size: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      z-index: 100;
+    }
+
+    .sound-toggle:hover {
+      background: rgba(255, 215, 90, 0.2);
+      border-color: rgba(255, 215, 90, 0.8);
     }
 
     @media (max-width: 900px) {
@@ -320,6 +350,14 @@
       .cookie {
         width: min(58vw, 260px);
         height: min(58vw, 260px);
+      }
+
+      .sound-toggle {
+        bottom: 10px;
+        right: 10px;
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
       }
     }
   </style>
@@ -348,6 +386,8 @@
         <div id="cookie" class="cookie" aria-label="Cookie clicker" title="Click me!">🍪</div>
         <div id="cpsLabel" class="cps">Cookies per second: 0</div>
       </div>
+
+      <button class="sound-toggle" id="soundToggle" title="Toggle Sound">🔊</button>
     </div>
 
     <aside class="sidebar">
@@ -364,6 +404,9 @@
 
           <div class="stat-key">Peak CPS</div>
           <div id="peakCps" class="stat-value-small">0</div>
+
+          <div class="stat-key">Buildings</div>
+          <div id="totalBuildings" class="stat-value-small">0</div>
         </div>
       </div>
 
@@ -373,13 +416,47 @@
       </div>
 
       <div class="side-section">
-        <button id="resetBtn" class="reset-btn">Reset</button>
+        <button id="resetBtn" class="reset-btn">Reset Game</button>
       </div>
     </aside>
   </div>
 
   <script>
     (() => {
+      // Sound system
+      const audioContext = (() => {
+        try {
+          return new (window.AudioContext || window.webkitAudioContext)();
+        } catch {
+          return null;
+        }
+      })();
+
+      let soundEnabled = localStorage.getItem('cookie-clicker-sound') !== 'false';
+
+      function playSound(freq = 800, duration = 50, type = 'sine') {
+        if (!soundEnabled || !audioContext) return;
+        try {
+          const now = audioContext.currentTime;
+          const osc = audioContext.createOscillator();
+          const gain = audioContext.createGain();
+          
+          osc.connect(gain);
+          gain.connect(audioContext.destination);
+          
+          osc.type = type;
+          osc.frequency.value = freq;
+          
+          gain.gain.setValueAtTime(0.1, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + duration / 1000);
+          
+          osc.start(now);
+          osc.stop(now + duration / 1000);
+        } catch (e) {
+          // Audio failed silently
+        }
+      }
+
       const state = {
         cookies: 0,
         totalClicks: 0,
@@ -389,7 +466,6 @@
         peakCps: 0,
         clickQueue: 0,
         lastFrame: performance.now(),
-        useHighPrecision: false,
         buildings: [
           { name: 'Cursor', baseCost: 15, cps: 0.1, owned: 0 },
           { name: 'Grandma', baseCost: 100, cps: 1, owned: 0 },
@@ -397,7 +473,9 @@
           { name: 'Bank', baseCost: 12000, cps: 47, owned: 0 },
           { name: 'Factory', baseCost: 130000, cps: 260, owned: 0 },
           { name: 'Temple', baseCost: 1400000, cps: 1400, owned: 0 },
-          { name: 'Portal', baseCost: 20000000, cps: 7800, owned: 0 }
+          { name: 'Portal', baseCost: 20000000, cps: 7800, owned: 0 },
+          { name: 'Dimension', baseCost: 330000000, cps: 44000, owned: 0 },
+          { name: 'Supernova', baseCost: 5100000000, cps: 260000, owned: 0 }
         ]
       };
 
@@ -409,9 +487,11 @@
         totalEarned: document.getElementById('totalEarned'),
         perClick: document.getElementById('perClick'),
         peakCps: document.getElementById('peakCps'),
+        totalBuildings: document.getElementById('totalBuildings'),
         upgradeList: document.getElementById('upgradeList'),
         cookie: document.getElementById('cookie'),
         resetBtn: document.getElementById('resetBtn'),
+        soundToggle: document.getElementById('soundToggle'),
         floatingContainer: document.getElementById('floatingContainer')
       };
 
@@ -420,7 +500,7 @@
         const abs = Math.abs(n);
         if (abs < 1000) return Math.floor(n).toString();
 
-        const units = ['', 'K', 'M', 'B', 'T', 'Qa', 'Qi', 'Sx', 'Sp', 'Oc'];
+        const units = ['', 'K', 'M', 'B', 'T', 'Qa', 'Qi', 'Sx', 'Sp', 'Oc', 'De'];
         let unit = 0;
         let value = abs;
 
@@ -435,6 +515,10 @@
 
       function getCost(b) {
         return Math.floor(b.baseCost * Math.pow(1.15, b.owned));
+      }
+
+      function getTotalBuildings() {
+        return state.buildings.reduce((sum, b) => sum + b.owned, 0);
       }
 
       function renderUpgrades() {
@@ -463,6 +547,7 @@
         els.totalEarned.textContent = formatShort(state.totalEarned);
         els.perClick.textContent = formatShort(state.perClick);
         els.peakCps.textContent = formatShort(state.peakCps);
+        els.totalBuildings.textContent = getTotalBuildings();
         renderUpgrades();
       }
 
@@ -496,7 +581,9 @@
 
         const x = pointerEvent.clientX || (pointerEvent.touches && pointerEvent.touches[0] ? pointerEvent.touches[0].clientX : window.innerWidth / 2);
         const y = pointerEvent.clientY || (pointerEvent.touches && pointerEvent.touches[0] ? pointerEvent.touches[0].clientY : window.innerHeight / 2);
+        
         spawnFloat(x, y, `+${formatShort(state.perClick)}`);
+        playSound(800, 50);
       }
 
       function buyBuilding(index) {
@@ -508,7 +595,10 @@
         b.owned += 1;
         state.cps += b.cps;
         if (state.cps > state.peakCps) state.peakCps = state.cps;
+        
+        playSound(1200, 100);
         updateDisplay();
+        saveGame();
       }
 
       function saveGame() {
@@ -551,7 +641,7 @@
       }
 
       function resetGame() {
-        if (!confirm('Reset the game?')) return;
+        if (!confirm('Are you sure? This will reset everything!')) return;
         state.cookies = 0;
         state.totalClicks = 0;
         state.totalEarned = 0;
@@ -561,13 +651,14 @@
         state.buildings.forEach(b => { b.owned = 0; });
         localStorage.removeItem('cookie-clicker-ultra-save');
         updateDisplay();
+        playSound(400, 200);
       }
 
       function loop(now) {
         const dt = (now - state.lastFrame) / 1000;
         state.lastFrame = now;
 
-        if (dt > 0) {
+        if (dt > 0 && dt < 0.1) {
           state.cookies += state.cps * dt;
           state.totalEarned += state.cps * dt;
           if (state.cps > state.peakCps) state.peakCps = state.cps;
@@ -580,22 +671,34 @@
       els.cookie.addEventListener('pointerdown', (e) => {
         processClick(e);
         updateDisplay();
+        saveGame();
       }, { passive: true });
 
       els.cookie.addEventListener('touchstart', (e) => {
         processClick(e);
         updateDisplay();
+        saveGame();
       }, { passive: true });
 
       els.resetBtn.addEventListener('click', resetGame);
+
+      els.soundToggle.addEventListener('click', () => {
+        soundEnabled = !soundEnabled;
+        localStorage.setItem('cookie-clicker-sound', soundEnabled ? 'true' : 'false');
+        els.soundToggle.textContent = soundEnabled ? '🔊' : '🔇';
+      });
 
       window.addEventListener('beforeunload', saveGame);
       window.addEventListener('visibilitychange', () => {
         if (document.visibilityState === 'hidden') saveGame();
       });
 
+      // Auto-save every 5 seconds
+      setInterval(saveGame, 5000);
+
       loadGame();
       updateDisplay();
+      els.soundToggle.textContent = soundEnabled ? '🔊' : '🔇';
       requestAnimationFrame(loop);
     })();
   </script>
