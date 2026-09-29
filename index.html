@@ -3,18 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cookie Clicker Ultra</title>
+  <title>Cookie Clicker Ultra - Optimized</title>
   <style>
     :root {
       --bg1: #3b1d0f;
       --bg2: #f2c14e;
-      --panel: rgba(30, 18, 10, 0.85);
       --gold: #ffd75a;
       --cream: #fff4d6;
       --accent: #9dff6a;
       --cookie: #d9862c;
-      --brown: #6a3f1d;
-      --dark: #1e120d;
     }
 
     * { box-sizing: border-box; }
@@ -143,21 +140,7 @@
     .cookie:active {
       transform: scale(0.96);
       filter: brightness(1.08);
-      box-shadow: 
-        0 0 42px rgba(255, 193, 56, 0.9),
-        inset -18px -18px 26px rgba(77, 35, 9, 0.5),
-        inset 18px 16px 24px rgba(255, 244, 196, 0.4);
-    }
-
-    .cookie::before {
-      content: "";
-      position: absolute;
-      inset: 18% 22% auto auto;
-      width: 20%;
-      height: 20%;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.18);
-      filter: blur(1px);
+      box-shadow: 0 0 42px rgba(255, 193, 56, 0.9), inset -18px -18px 26px rgba(77, 35, 9, 0.5), inset 18px 16px 24px rgba(255, 244, 196, 0.4);
     }
 
     .cps {
@@ -188,10 +171,6 @@
       text-align: center;
       background: rgba(0,0,0,0.2);
       border-bottom: 2px solid rgba(255, 215, 90, 0.5);
-      display: flex;
-      gap: 8px;
-      justify-content: center;
-      align-items: center;
     }
 
     .tab-buttons {
@@ -268,7 +247,6 @@
       padding: 10px 12px;
       cursor: pointer;
       transition: transform 0.08s ease, border-color 0.12s ease, background 0.12s ease;
-      box-shadow: inset 0 0 0 rgba(0,0,0,0);
     }
 
     .upgrade:hover {
@@ -316,7 +294,6 @@
       padding: 12px;
       cursor: default;
       transition: all 0.2s;
-      position: relative;
     }
 
     .achievement.unlocked {
@@ -329,21 +306,9 @@
       opacity: 0.5;
     }
 
-    .achievement-header {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      margin-bottom: 4px;
-    }
-
     .achievement-icon {
       font-size: 24px;
-      min-width: 24px;
-      text-align: center;
-    }
-
-    .achievement-info {
-      flex: 1;
+      margin-bottom: 8px;
     }
 
     .achievement-name {
@@ -356,13 +321,6 @@
     .achievement-desc {
       font-size: 11px;
       color: #aaa;
-    }
-
-    .achievement-progress {
-      font-size: 10px;
-      color: var(--gold);
-      font-family: "Consolas", "Courier New", monospace;
-      margin-top: 4px;
     }
 
     .stats-grid {
@@ -394,6 +352,7 @@
       text-transform: uppercase;
       cursor: pointer;
       transition: all 0.2s;
+      margin-top: 12px;
     }
 
     .reset-btn:hover {
@@ -402,10 +361,10 @@
 
     .floating {
       position: fixed;
-      font-size: 32px;
+      font-size: 28px;
       font-weight: 800;
       color: #ffd75a;
-      text-shadow: 0 0 12px rgba(255, 215, 90, 0.8), 0 0 24px rgba(255, 193, 56, 0.4);
+      text-shadow: 0 0 12px rgba(255, 215, 90, 0.8);
       font-family: "Consolas", "Courier New", monospace;
       pointer-events: none;
       user-select: none;
@@ -429,25 +388,13 @@
     }
 
     @keyframes slideIn {
-      from {
-        transform: translateX(400px);
-        opacity: 0;
-      }
-      to {
-        transform: translateX(0);
-        opacity: 1;
-      }
+      from { transform: translateX(400px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
     }
 
     @keyframes slideOut {
-      from {
-        transform: translateX(0);
-        opacity: 1;
-      }
-      to {
-        transform: translateX(400px);
-        opacity: 0;
-      }
+      from { transform: translateX(0); opacity: 1; }
+      to { transform: translateX(400px); opacity: 0; }
     }
 
     .sound-toggle {
@@ -475,10 +422,7 @@
     }
 
     @media (max-width: 900px) {
-      .game {
-        flex-direction: column;
-      }
-
+      .game { flex-direction: column; }
       .sidebar {
         width: 100%;
         min-width: 0;
@@ -486,22 +430,10 @@
         border-left: none;
         border-top: 3px solid rgba(255, 215, 90, 0.6);
       }
-
-      .main {
-        min-height: 58vh;
-      }
-
+      .main { min-height: 58vh; }
       .cookie {
         width: min(58vw, 260px);
         height: min(58vw, 260px);
-      }
-
-      .sound-toggle {
-        bottom: 10px;
-        right: 10px;
-        width: 40px;
-        height: 40px;
-        font-size: 18px;
       }
     }
   </style>
@@ -527,11 +459,11 @@
       </div>
 
       <div class="cookie-wrap">
-        <div id="cookie" class="cookie" aria-label="Cookie clicker" title="Click me!">🍪</div>
+        <div id="cookie" class="cookie">🍪</div>
         <div id="cpsLabel" class="cps">Cookies per second: 0</div>
       </div>
 
-      <button class="sound-toggle" id="soundToggle" title="Toggle Sound">🔊</button>
+      <button class="sound-toggle" id="soundToggle">🔊</button>
     </div>
 
     <aside class="sidebar">
@@ -562,55 +494,45 @@
         <div class="stats-grid">
           <div class="stat-key">Total Earned</div>
           <div id="totalEarned" class="stat-value-small">0</div>
-
           <div class="stat-key">Total Clicks</div>
           <div id="totalClicks" class="stat-value-small">0</div>
-
           <div class="stat-key">Peak CPS</div>
           <div id="peakCps" class="stat-value-small">0</div>
-
           <div class="stat-key">Buildings</div>
           <div id="totalBuildings" class="stat-value-small">0</div>
         </div>
-        <button id="resetBtn" class="reset-btn" style="margin-top: 12px;">Reset Game</button>
+        <button id="resetBtn" class="reset-btn">Reset Game</button>
       </div>
     </aside>
   </div>
 
   <script>
     (() => {
-      // Sound system
+      // Audio context for sound
       const audioContext = (() => {
-        try {
-          return new (window.AudioContext || window.webkitAudioContext)();
-        } catch {
-          return null;
-        }
+        try { return new (window.AudioContext || window.webkitAudioContext)(); }
+        catch { return null; }
       })();
 
-      let soundEnabled = localStorage.getItem('cookie-clicker-sound') !== 'false';
+      let soundEnabled = localStorage.getItem('cc-sound') !== 'false';
 
-      function playSound(freq = 800, duration = 50, type = 'sine') {
+      function playSound(freq = 800, duration = 50) {
         if (!soundEnabled || !audioContext) return;
         try {
           const now = audioContext.currentTime;
           const osc = audioContext.createOscillator();
           const gain = audioContext.createGain();
-          
           osc.connect(gain);
           gain.connect(audioContext.destination);
-          
-          osc.type = type;
           osc.frequency.value = freq;
-          
           gain.gain.setValueAtTime(0.1, now);
           gain.gain.exponentialRampToValueAtTime(0.01, now + duration / 1000);
-          
           osc.start(now);
           osc.stop(now + duration / 1000);
         } catch (e) {}
       }
 
+      // Game state - all numeric, no objects in hot path
       const state = {
         cookies: 0,
         totalClicks: 0,
@@ -618,41 +540,42 @@
         perClick: 1,
         cps: 0,
         peakCps: 0,
-        lastSaveTime: Date.now(),
-        pendingUpdates: false,
+        lastRender: 0,
+        lastSave: 0,
+        pendingFloats: [],
         buildings: [
-          { name: 'Cursor', baseCost: 15, cps: 0.1, owned: 0 },
-          { name: 'Grandma', baseCost: 100, cps: 1, owned: 0 },
-          { name: 'Farm', baseCost: 1100, cps: 8, owned: 0 },
-          { name: 'Bank', baseCost: 12000, cps: 47, owned: 0 },
-          { name: 'Factory', baseCost: 130000, cps: 260, owned: 0 },
-          { name: 'Temple', baseCost: 1400000, cps: 1400, owned: 0 },
-          { name: 'Portal', baseCost: 20000000, cps: 7800, owned: 0 },
-          { name: 'Dimension', baseCost: 330000000, cps: 44000, owned: 0 },
-          { name: 'Supernova', baseCost: 5100000000, cps: 260000, owned: 0 }
+          { name: 'Cursor', cost: 15, cps: 0.1, owned: 0 },
+          { name: 'Grandma', cost: 100, cps: 1, owned: 0 },
+          { name: 'Farm', cost: 1100, cps: 8, owned: 0 },
+          { name: 'Bank', cost: 12000, cps: 47, owned: 0 },
+          { name: 'Factory', cost: 130000, cps: 260, owned: 0 },
+          { name: 'Temple', cost: 1400000, cps: 1400, owned: 0 },
+          { name: 'Portal', cost: 20000000, cps: 7800, owned: 0 },
+          { name: 'Dimension', cost: 330000000, cps: 44000, owned: 0 },
+          { name: 'Supernova', cost: 5100000000, cps: 260000, owned: 0 }
         ],
         clickUpgrades: [
-          { name: 'Better Fingers', cost: 100, effect: 1, owned: false, desc: '+1 per click' },
-          { name: 'Cursor Force', cost: 500, effect: 2, owned: false, desc: '+2 per click' },
-          { name: 'Iron Fingers', cost: 2000, effect: 5, owned: false, desc: '+5 per click' },
-          { name: 'Titanium Fingers', cost: 10000, effect: 10, owned: false, desc: '+10 per click' },
-          { name: 'Golden Touch', cost: 50000, effect: 25, owned: false, desc: '+25 per click' },
-          { name: 'Quantum Fingers', cost: 250000, effect: 50, owned: false, desc: '+50 per click' },
-          { name: 'Divine Intervention', cost: 1000000, effect: 100, owned: false, desc: '+100 per click' }
+          { name: 'Better Fingers', cost: 100, effect: 1, owned: false },
+          { name: 'Cursor Force', cost: 500, effect: 2, owned: false },
+          { name: 'Iron Fingers', cost: 2000, effect: 5, owned: false },
+          { name: 'Titanium Fingers', cost: 10000, effect: 10, owned: false },
+          { name: 'Golden Touch', cost: 50000, effect: 25, owned: false },
+          { name: 'Quantum Fingers', cost: 250000, effect: 50, owned: false },
+          { name: 'Divine Intervention', cost: 1000000, effect: 100, owned: false }
         ],
         achievements: [
-          { id: 'first', name: 'First Bite', icon: '🍪', desc: 'Bake your first cookie', unlocked: false, check: () => state.totalClicks >= 1 },
-          { id: 'hundred', name: 'Centennial', icon: '💯', desc: 'Earn 100 cookies', unlocked: false, check: () => state.totalEarned >= 100, progress: () => Math.min(100, state.totalEarned) },
-          { id: 'thousand', name: 'Millionaire', icon: '💰', desc: 'Earn 1,000 cookies', unlocked: false, check: () => state.totalEarned >= 1000, progress: () => Math.min(1000, state.totalEarned) },
-          { id: 'million', name: 'Billionaire', icon: '🏦', desc: 'Earn 1,000,000 cookies', unlocked: false, check: () => state.totalEarned >= 1000000, progress: () => Math.min(1000000, state.totalEarned) },
-          { id: 'rapid', name: 'Rapid Clicker', icon: '⚡', desc: 'Click 100 times', unlocked: false, check: () => state.totalClicks >= 100, progress: () => Math.min(100, state.totalClicks) },
-          { id: 'frenzy', name: 'Click Frenzy', icon: '🔥', desc: 'Click 1,000 times', unlocked: false, check: () => state.totalClicks >= 1000, progress: () => Math.min(1000, state.totalClicks) },
-          { id: 'grandma', name: 'Grandma Approved', icon: '👵', desc: 'Own 5 Grandmas', unlocked: false, check: () => state.buildings[1].owned >= 5, progress: () => Math.min(5, state.buildings[1].owned) },
-          { id: 'farm', name: 'Farm Fresh', icon: '🌾', desc: 'Own 10 Farms', unlocked: false, check: () => state.buildings[2].owned >= 10, progress: () => Math.min(10, state.buildings[2].owned) },
-          { id: 'cps100', name: 'Steady Producer', icon: '📈', desc: 'Reach 100 CPS', unlocked: false, check: () => state.cps >= 100, progress: () => Math.min(100, state.cps) },
-          { id: 'cps1000', name: 'Production Master', icon: '🏭', desc: 'Reach 1,000 CPS', unlocked: false, check: () => state.cps >= 1000, progress: () => Math.min(1000, state.cps) },
-          { id: 'powerup', name: 'Finger Boost', icon: '💪', desc: 'Buy a Click Power upgrade', unlocked: false, check: () => state.clickUpgrades.some(u => u.owned) },
-          { id: 'allpower', name: 'Ultimate Fingers', icon: '🌟', desc: 'Buy all Click Power upgrades', unlocked: false, check: () => state.clickUpgrades.every(u => u.owned) }
+          { id: 'first', name: 'First Bite', icon: '🍪', desc: 'Click once', check: () => state.totalClicks >= 1, unlocked: false },
+          { id: 'hundred', name: 'Centennial', icon: '💯', desc: 'Earn 100 cookies', check: () => state.totalEarned >= 100, unlocked: false },
+          { id: 'thousand', name: 'Millionaire', icon: '💰', desc: 'Earn 1,000 cookies', check: () => state.totalEarned >= 1000, unlocked: false },
+          { id: 'million', name: 'Billionaire', icon: '🏦', desc: 'Earn 1,000,000 cookies', check: () => state.totalEarned >= 1000000, unlocked: false },
+          { id: 'rapid', name: 'Rapid Clicker', icon: '⚡', desc: 'Click 100 times', check: () => state.totalClicks >= 100, unlocked: false },
+          { id: 'frenzy', name: 'Click Frenzy', icon: '🔥', desc: 'Click 1,000 times', check: () => state.totalClicks >= 1000, unlocked: false },
+          { id: 'grandma', name: 'Grandma Approved', icon: '👵', desc: 'Own 5 Grandmas', check: () => state.buildings[1].owned >= 5, unlocked: false },
+          { id: 'farm', name: 'Farm Fresh', icon: '🌾', desc: 'Own 10 Farms', check: () => state.buildings[2].owned >= 10, unlocked: false },
+          { id: 'cps100', name: 'Steady Producer', icon: '📈', desc: 'Reach 100 CPS', check: () => state.cps >= 100, unlocked: false },
+          { id: 'cps1000', name: 'Production Master', icon: '🏭', desc: 'Reach 1,000 CPS', check: () => state.cps >= 1000, unlocked: false },
+          { id: 'powerup', name: 'Finger Boost', icon: '💪', desc: 'Buy a Click upgrade', check: () => state.clickUpgrades.some(u => u.owned), unlocked: false },
+          { id: 'allpower', name: 'Ultimate Fingers', icon: '🌟', desc: 'Buy all upgrades', check: () => state.clickUpgrades.every(u => u.owned), unlocked: false }
         ]
       };
 
@@ -675,37 +598,56 @@
       };
 
       function formatShort(n) {
-        if (!Number.isFinite(n)) return '0';
-        const abs = Math.abs(n);
-        if (abs < 1000) return Math.floor(n).toString();
-
-        const units = ['', 'K', 'M', 'B', 'T', 'Qa', 'Qi', 'Sx', 'Sp', 'Oc', 'De'];
-        let unit = 0;
-        let value = abs;
-
-        while (value >= 1000 && unit < units.length - 1) {
-          value /= 1000;
-          unit++;
+        if (n < 1000) return Math.floor(n).toString();
+        const units = ['', 'K', 'M', 'B', 'T', 'Qa', 'Qi', 'Sx', 'Sp', 'Oc'];
+        let exp = 0;
+        while (n >= 1000 && exp < units.length - 1) {
+          n /= 1000;
+          exp++;
         }
-
-        const text = value >= 100 ? value.toFixed(0) : value.toFixed(2).replace(/\.00$/, '').replace(/(\.\d)0$/, '$1');
-        return text + units[unit];
+        return (n >= 100 ? n.toFixed(0) : n.toFixed(2).replace(/\.00$/, '')) + units[exp];
       }
 
       function getCost(b) {
-        return Math.floor(b.baseCost * Math.pow(1.15, b.owned));
-      }
-
-      function getTotalBuildings() {
-        return state.buildings.reduce((sum, b) => sum + b.owned, 0);
+        return Math.floor(b.cost * Math.pow(1.15, b.owned));
       }
 
       function showNotification(text, icon = '✓') {
-        const notif = document.createElement('div');
-        notif.className = 'notification';
-        notif.textContent = `${icon} ${text}`;
-        document.body.appendChild(notif);
-        setTimeout(() => notif.remove(), 3000);
+        const el = document.createElement('div');
+        el.className = 'notification';
+        el.textContent = `${icon} ${text}`;
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 3000);
+      }
+
+      // Batch float rendering - only create DOM elements every 50ms
+      function addFloat(x, y, text) {
+        state.pendingFloats.push({ x: Math.max(0, Math.min(window.innerWidth, x - 20)), y: Math.max(0, Math.min(window.innerHeight, y - 20)), text, created: performance.now() });
+      }
+
+      function flushFloats() {
+        const now = performance.now();
+        state.pendingFloats.forEach(f => {
+          if (now - f.created < 10) { // Only show very recent floats
+            const el = document.createElement('div');
+            el.className = 'floating';
+            el.textContent = f.text;
+            el.style.left = f.x + 'px';
+            el.style.top = f.y + 'px';
+            els.floatingContainer.appendChild(el);
+
+            const start = performance.now();
+            const animateFloat = () => {
+              const t = (performance.now() - start) / 600;
+              el.style.transform = `translate(0px, ${-t * 80}px)`;
+              el.style.opacity = Math.max(0, 1 - t);
+              if (t < 1) requestAnimationFrame(animateFloat);
+              else el.remove();
+            };
+            animateFloat();
+          }
+        });
+        state.pendingFloats = [];
       }
 
       function checkAchievements() {
@@ -714,40 +656,31 @@
             ach.unlocked = true;
             showNotification(`Achievement: ${ach.name}!`, ach.icon);
             playSound(1000, 150);
-            state.pendingUpdates = true;
           }
         });
       }
 
       function renderUpgrades() {
         els.upgradeList.innerHTML = '';
-        state.buildings.forEach((b, index) => {
+        state.buildings.forEach((b, i) => {
           const cost = getCost(b);
           const affordable = state.cookies >= cost;
           const div = document.createElement('div');
           div.className = 'upgrade' + (affordable ? ' affordable' : '');
-          div.innerHTML = `
-            <div class="upgrade-name">${b.name} ×${b.owned}</div>
-            <div class="upgrade-cost">Cost: ${formatShort(cost)}</div>
-            <div class="upgrade-effect">+${formatShort(b.cps)} CPS</div>
-          `;
-          div.addEventListener('click', () => buyBuilding(index));
+          div.innerHTML = `<div class="upgrade-name">${b.name} ×${b.owned}</div><div class="upgrade-cost">Cost: ${formatShort(cost)}</div><div class="upgrade-effect">+${formatShort(b.cps)} CPS</div>`;
+          div.addEventListener('click', () => buyBuilding(i));
           els.upgradeList.appendChild(div);
         });
       }
 
       function renderClickUpgrades() {
         els.clickUpgradesList.innerHTML = '';
-        state.clickUpgrades.forEach((upg, index) => {
-          const affordable = state.cookies >= upg.cost && !upg.owned;
+        state.clickUpgrades.forEach((u, i) => {
+          const affordable = state.cookies >= u.cost && !u.owned;
           const div = document.createElement('div');
-          div.className = 'upgrade' + (affordable ? ' affordable' : '') + (upg.owned ? ' purchased' : '');
-          div.innerHTML = `
-            <div class="upgrade-name">${upg.name}</div>
-            <div class="upgrade-cost">Cost: ${formatShort(upg.cost)}</div>
-            <div class="upgrade-effect">${upg.desc}${upg.owned ? ' ✓' : ''}</div>
-          `;
-          div.addEventListener('click', () => buyClickUpgrade(index));
+          div.className = 'upgrade' + (affordable ? ' affordable' : '') + (u.owned ? ' purchased' : '');
+          div.innerHTML = `<div class="upgrade-name">${u.name}</div><div class="upgrade-cost">Cost: ${formatShort(u.cost)}</div><div class="upgrade-effect">+${u.effect} per click${u.owned ? ' ✓' : ''}</div>`;
+          div.addEventListener('click', () => buyClickUpgrade(i));
           els.clickUpgradesList.appendChild(div);
         });
       }
@@ -757,17 +690,7 @@
         state.achievements.forEach(ach => {
           const div = document.createElement('div');
           div.className = 'achievement' + (ach.unlocked ? ' unlocked' : ' locked');
-          const progress = ach.progress ? ` (${formatShort(ach.progress())} / ${ach.id === 'allpower' ? '7' : '?'})` : '';
-          div.innerHTML = `
-            <div class="achievement-header">
-              <div class="achievement-icon">${ach.icon}</div>
-              <div class="achievement-info">
-                <div class="achievement-name">${ach.name}</div>
-                <div class="achievement-desc">${ach.desc}</div>
-                ${ach.progress ? `<div class="achievement-progress">${progress}</div>` : ''}
-              </div>
-            </div>
-          `;
+          div.innerHTML = `<div class="achievement-icon">${ach.icon}</div><div class="achievement-name">${ach.name}</div><div class="achievement-desc">${ach.desc}</div>`;
           els.achievementsList.appendChild(div);
         });
       }
@@ -780,50 +703,27 @@
         els.totalEarned.textContent = formatShort(state.totalEarned);
         els.perClick.textContent = formatShort(state.perClick);
         els.peakCps.textContent = formatShort(state.peakCps);
-        els.totalBuildings.textContent = getTotalBuildings();
+        els.totalBuildings.textContent = state.buildings.reduce((s, b) => s + b.owned, 0);
         renderUpgrades();
         renderClickUpgrades();
         renderAchievements();
       }
 
-      function spawnFloat(x, y, text) {
-        const el = document.createElement('div');
-        el.className = 'floating';
-        el.textContent = text;
-        el.style.left = (x - 20) + 'px';
-        el.style.top = (y - 20) + 'px';
-        els.floatingContainer.appendChild(el);
-
-        const start = performance.now();
-        function frame(now) {
-          const t = (now - start) / 600;
-          el.style.transform = `translate(0px, ${-t * 80}px)`;
-          el.style.opacity = String(Math.max(0, 1 - t));
-          if (t < 1) {
-            requestAnimationFrame(frame);
-          } else {
-            el.remove();
-          }
-        }
-        requestAnimationFrame(frame);
-      }
-
-      function processClick(pointerEvent) {
+      function processClick(e) {
         state.totalClicks += 1;
         state.cookies += state.perClick;
         state.totalEarned += state.perClick;
-        state.pendingUpdates = true;
 
-        const x = pointerEvent.clientX || (pointerEvent.touches?.[0]?.clientX || window.innerWidth / 2);
-        const y = pointerEvent.clientY || (pointerEvent.touches?.[0]?.clientY || window.innerHeight / 2);
+        const x = e.clientX || e.touches?.[0]?.clientX || window.innerWidth / 2;
+        const y = e.clientY || e.touches?.[0]?.clientY || window.innerHeight / 2;
         
-        spawnFloat(x, y, `+${formatShort(state.perClick)}`);
+        addFloat(x, y, `+${formatShort(state.perClick)}`);
         playSound(800, 50);
         checkAchievements();
       }
 
-      function buyBuilding(index) {
-        const b = state.buildings[index];
+      function buyBuilding(idx) {
+        const b = state.buildings[idx];
         const cost = getCost(b);
         if (state.cookies < cost) return;
 
@@ -831,26 +731,22 @@
         b.owned += 1;
         state.cps += b.cps;
         if (state.cps > state.peakCps) state.peakCps = state.cps;
-        
         playSound(1200, 100);
-        state.pendingUpdates = true;
+        updateDisplay();
         checkAchievements();
-        saveGame();
       }
 
-      function buyClickUpgrade(index) {
-        const upg = state.clickUpgrades[index];
-        if (upg.owned || state.cookies < upg.cost) return;
+      function buyClickUpgrade(idx) {
+        const u = state.clickUpgrades[idx];
+        if (u.owned || state.cookies < u.cost) return;
 
-        state.cookies -= upg.cost;
-        upg.owned = true;
-        state.perClick += upg.effect;
-        
+        state.cookies -= u.cost;
+        u.owned = true;
+        state.perClick += u.effect;
         playSound(1400, 150);
-        showNotification(`${upg.name} unlocked!`, '💪');
-        state.pendingUpdates = true;
+        showNotification(`${u.name} unlocked!`, '💪');
+        updateDisplay();
         checkAchievements();
-        saveGame();
       }
 
       function saveGame() {
@@ -861,92 +757,93 @@
           perClick: state.perClick,
           cps: state.cps,
           peakCps: state.peakCps,
-          buildings: state.buildings.map(b => ({ owned: b.owned })),
-          clickUpgrades: state.clickUpgrades.map(u => ({ owned: u.owned })),
-          achievements: state.achievements.map(a => ({ id: a.id, unlocked: a.unlocked }))
+          buildings: state.buildings.map(b => b.owned),
+          clickUpgrades: state.clickUpgrades.map(u => u.owned),
+          achievements: state.achievements.map(a => a.unlocked)
         };
-        localStorage.setItem('cookie-clicker-ultra-save', JSON.stringify(payload));
+        localStorage.setItem('cc-save', JSON.stringify(payload));
       }
 
       function loadGame() {
         try {
-          const raw = localStorage.getItem('cookie-clicker-ultra-save');
+          const raw = localStorage.getItem('cc-save');
           if (!raw) return;
-          const saved = JSON.parse(raw);
-          if (!saved) return;
-
-          state.cookies = Number(saved.cookies) || 0;
-          state.totalClicks = Number(saved.totalClicks) || 0;
-          state.totalEarned = Number(saved.totalEarned) || 0;
-          state.perClick = Number(saved.perClick) || 1;
-          state.cps = Number(saved.cps) || 0;
-          state.peakCps = Number(saved.peakCps) || 0;
-
-          if (Array.isArray(saved.buildings)) {
-            saved.buildings.forEach((entry, i) => {
-              if (state.buildings[i]) state.buildings[i].owned = Number(entry.owned) || 0;
-            });
-          }
-
-          if (Array.isArray(saved.clickUpgrades)) {
-            saved.clickUpgrades.forEach((entry, i) => {
-              if (state.clickUpgrades[i]) state.clickUpgrades[i].owned = Boolean(entry.owned);
-            });
-          }
-
-          if (Array.isArray(saved.achievements)) {
-            saved.achievements.forEach(entry => {
-              const ach = state.achievements.find(a => a.id === entry.id);
-              if (ach) ach.unlocked = Boolean(entry.unlocked);
-            });
-          }
-
+          const data = JSON.parse(raw);
+          
+          state.cookies = data.cookies || 0;
+          state.totalClicks = data.totalClicks || 0;
+          state.totalEarned = data.totalEarned || 0;
+          state.perClick = data.perClick || 1;
+          state.cps = data.cps || 0;
+          state.peakCps = data.peakCps || 0;
+          
+          if (data.buildings) data.buildings.forEach((v, i) => state.buildings[i].owned = v || 0);
+          if (data.clickUpgrades) data.clickUpgrades.forEach((v, i) => state.clickUpgrades[i].owned = v || false);
+          if (data.achievements) data.achievements.forEach((v, i) => state.achievements[i].unlocked = v || false);
+          
           updateDisplay();
-        } catch (e) {
-          console.warn('Save load failed', e);
-        }
+        } catch (e) {}
       }
 
       function resetGame() {
-        if (!confirm('Are you sure? This will reset everything!')) return;
+        if (!confirm('Reset everything?')) return;
         state.cookies = 0;
         state.totalClicks = 0;
         state.totalEarned = 0;
         state.perClick = 1;
         state.cps = 0;
         state.peakCps = 0;
-        state.buildings.forEach(b => { b.owned = 0; });
-        state.clickUpgrades.forEach(u => { u.owned = false; });
-        state.achievements.forEach(a => { a.unlocked = false; });
-        localStorage.removeItem('cookie-clicker-ultra-save');
+        state.buildings.forEach(b => b.owned = 0);
+        state.clickUpgrades.forEach(u => u.owned = false);
+        state.achievements.forEach(a => a.unlocked = false);
+        localStorage.removeItem('cc-save');
         updateDisplay();
-        playSound(400, 200);
       }
 
-      function loop(now) {
-        const dt = (now - state.lastFrame) / 1000;
-        state.lastFrame = now;
-
+      function gameLoop(now) {
+        // Passive income
+        const dt = (now - state.lastRender) / 1000;
         if (dt > 0 && dt < 0.1) {
           state.cookies += state.cps * dt;
           state.totalEarned += state.cps * dt;
           if (state.cps > state.peakCps) state.peakCps = state.cps;
-          
-          // Batch updates - only update display when needed
-          if (state.pendingUpdates || Date.now() - state.lastSaveTime > 200) {
-            updateDisplay();
-            state.pendingUpdates = false;
-          }
-
-          // Auto-save every 3 seconds
-          if (Date.now() - state.lastSaveTime > 3000) {
-            saveGame();
-            state.lastSaveTime = Date.now();
-          }
         }
 
-        requestAnimationFrame(loop);
+        // Render every 50ms
+        if (now - state.lastRender > 50) {
+          updateDisplay();
+          flushFloats();
+          state.lastRender = now;
+        }
+
+        // Save every 3 seconds
+        if (now - state.lastSave > 3000) {
+          saveGame();
+          state.lastSave = now;
+        }
+
+        requestAnimationFrame(gameLoop);
       }
+
+      // Click handler - optimized for 1000+ CPS
+      let lastClickRender = 0;
+      els.cookie.addEventListener('pointerdown', (e) => {
+        processClick(e);
+        const now = performance.now();
+        if (now - lastClickRender > 20) {
+          updateDisplay();
+          lastClickRender = now;
+        }
+      }, { passive: true });
+
+      els.cookie.addEventListener('touchstart', (e) => {
+        processClick(e);
+        const now = performance.now();
+        if (now - lastClickRender > 20) {
+          updateDisplay();
+          lastClickRender = now;
+        }
+      }, { passive: true });
 
       // Tab system
       document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -958,33 +855,10 @@
         });
       });
 
-      // Click handler with debouncing for massive click rates
-      let lastClickTime = 0;
-      const clickDebounce = 10; // Only show floats every 10ms at most
-
-      els.cookie.addEventListener('pointerdown', (e) => {
-        processClick(e);
-        const now = Date.now();
-        if (now - lastClickTime > clickDebounce) {
-          saveGame();
-          lastClickTime = now;
-        }
-      }, { passive: true });
-
-      els.cookie.addEventListener('touchstart', (e) => {
-        processClick(e);
-        const now = Date.now();
-        if (now - lastClickTime > clickDebounce) {
-          saveGame();
-          lastClickTime = now;
-        }
-      }, { passive: true });
-
       els.resetBtn.addEventListener('click', resetGame);
-
       els.soundToggle.addEventListener('click', () => {
         soundEnabled = !soundEnabled;
-        localStorage.setItem('cookie-clicker-sound', soundEnabled ? 'true' : 'false');
+        localStorage.setItem('cc-sound', soundEnabled ? 'true' : 'false');
         els.soundToggle.textContent = soundEnabled ? '🔊' : '🔇';
       });
 
@@ -996,8 +870,9 @@
       loadGame();
       updateDisplay();
       els.soundToggle.textContent = soundEnabled ? '🔊' : '🔇';
-      state.lastFrame = performance.now();
-      requestAnimationFrame(loop);
+      state.lastRender = performance.now();
+      state.lastSave = performance.now();
+      requestAnimationFrame(gameLoop);
     })();
   </script>
 </body>
