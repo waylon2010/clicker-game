@@ -618,6 +618,8 @@
         perClick: 1,
         cps: 0,
         peakCps: 0,
+        lastSaveTime: Date.now(),
+        pendingUpdates: false,
         buildings: [
           { name: 'Cursor', baseCost: 15, cps: 0.1, owned: 0 },
           { name: 'Grandma', baseCost: 100, cps: 1, owned: 0 },
@@ -712,6 +714,7 @@
             ach.unlocked = true;
             showNotification(`Achievement: ${ach.name}!`, ach.icon);
             playSound(1000, 150);
+            state.pendingUpdates = true;
           }
         });
       }
@@ -809,6 +812,7 @@
         state.totalClicks += 1;
         state.cookies += state.perClick;
         state.totalEarned += state.perClick;
+        state.pendingUpdates = true;
 
         const x = pointerEvent.clientX || (pointerEvent.touches?.[0]?.clientX || window.innerWidth / 2);
         const y = pointerEvent.clientY || (pointerEvent.touches?.[0]?.clientY || window.innerHeight / 2);
@@ -829,7 +833,7 @@
         if (state.cps > state.peakCps) state.peakCps = state.cps;
         
         playSound(1200, 100);
-        updateDisplay();
+        state.pendingUpdates = true;
         checkAchievements();
         saveGame();
       }
@@ -844,16 +848,16 @@
         
         playSound(1400, 150);
         showNotification(`${upg.name} unlocked!`, '💪');
-        updateDisplay();
+        state.pendingUpdates = true;
         checkAchievements();
         saveGame();
       }
 
       function saveGame() {
         const payload = {
-          cookies: state.cookies,
+          cookies: Math.floor(state.cookies),
           totalClicks: state.totalClicks,
-          totalEarned: state.totalEarned,
+          totalEarned: Math.floor(state.totalEarned),
           perClick: state.perClick,
           cps: state.cps,
           peakCps: state.peakCps,
@@ -920,14 +924,25 @@
       }
 
       function loop(now) {
-        const dt = (performance.now() - state.lastFrame) / 1000;
-        state.lastFrame = performance.now();
+        const dt = (now - state.lastFrame) / 1000;
+        state.lastFrame = now;
 
         if (dt > 0 && dt < 0.1) {
           state.cookies += state.cps * dt;
           state.totalEarned += state.cps * dt;
           if (state.cps > state.peakCps) state.peakCps = state.cps;
-          updateDisplay();
+          
+          // Batch updates - only update display when needed
+          if (state.pendingUpdates || Date.now() - state.lastSaveTime > 200) {
+            updateDisplay();
+            state.pendingUpdates = false;
+          }
+
+          // Auto-save every 3 seconds
+          if (Date.now() - state.lastSaveTime > 3000) {
+            saveGame();
+            state.lastSaveTime = Date.now();
+          }
         }
 
         requestAnimationFrame(loop);
@@ -943,16 +958,26 @@
         });
       });
 
+      // Click handler with debouncing for massive click rates
+      let lastClickTime = 0;
+      const clickDebounce = 10; // Only show floats every 10ms at most
+
       els.cookie.addEventListener('pointerdown', (e) => {
         processClick(e);
-        updateDisplay();
-        saveGame();
+        const now = Date.now();
+        if (now - lastClickTime > clickDebounce) {
+          saveGame();
+          lastClickTime = now;
+        }
       }, { passive: true });
 
       els.cookie.addEventListener('touchstart', (e) => {
         processClick(e);
-        updateDisplay();
-        saveGame();
+        const now = Date.now();
+        if (now - lastClickTime > clickDebounce) {
+          saveGame();
+          lastClickTime = now;
+        }
       }, { passive: true });
 
       els.resetBtn.addEventListener('click', resetGame);
@@ -968,11 +993,10 @@
         if (document.visibilityState === 'hidden') saveGame();
       });
 
-      setInterval(saveGame, 5000);
-
       loadGame();
       updateDisplay();
       els.soundToggle.textContent = soundEnabled ? '🔊' : '🔇';
+      state.lastFrame = performance.now();
       requestAnimationFrame(loop);
     })();
   </script>
