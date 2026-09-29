@@ -34,6 +34,17 @@
       display: flex;
       justify-content: center;
       align-items: stretch;
+      position: relative;
+    }
+
+    .floating-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 9999;
     }
 
     .game {
@@ -181,6 +192,13 @@
     .side-section {
       padding: 16px 14px 12px;
       border-bottom: 1px solid rgba(255, 215, 90, 0.3);
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .side-section:last-of-type {
+      flex: 0;
+      overflow: visible;
     }
 
     .section-title {
@@ -271,15 +289,12 @@
 
     .floating {
       position: fixed;
-      left: 0;
-      top: 0;
-      font-size: clamp(18px, 2vw, 32px);
-      color: var(--gold);
-      text-shadow: 0 0 12px rgba(255, 215, 90, 0.5);
+      font-size: 32px;
       font-weight: 800;
+      color: #ffd75a;
+      text-shadow: 0 0 12px rgba(255, 215, 90, 0.8), 0 0 24px rgba(255, 193, 56, 0.4);
       font-family: "Consolas", "Courier New", monospace;
       pointer-events: none;
-      z-index: 9999;
       user-select: none;
       white-space: nowrap;
       will-change: transform, opacity;
@@ -310,6 +325,8 @@
   </style>
 </head>
 <body>
+  <div class="floating-container" id="floatingContainer"></div>
+
   <div class="game">
     <div class="main">
       <div class="stats">
@@ -394,7 +411,8 @@
         peakCps: document.getElementById('peakCps'),
         upgradeList: document.getElementById('upgradeList'),
         cookie: document.getElementById('cookie'),
-        resetBtn: document.getElementById('resetBtn')
+        resetBtn: document.getElementById('resetBtn'),
+        floatingContainer: document.getElementById('floatingContainer')
       };
 
       function formatShort(n) {
@@ -452,15 +470,15 @@
         const el = document.createElement('div');
         el.className = 'floating';
         el.textContent = text;
-        el.style.left = x + 'px';
-        el.style.top = y + 'px';
-        document.body.appendChild(el);
+        el.style.left = (x - 20) + 'px';
+        el.style.top = (y - 20) + 'px';
+        els.floatingContainer.appendChild(el);
 
         const start = performance.now();
         function frame(now) {
           const t = (now - start) / 600;
-          el.style.transform = `translate(0px, ${-t * 120}px)`;
-          el.style.opacity = String(1 - t);
+          el.style.transform = `translate(0px, ${-t * 80}px)`;
+          el.style.opacity = String(Math.max(0, 1 - t));
           if (t < 1) {
             requestAnimationFrame(frame);
           } else {
@@ -476,9 +494,9 @@
         state.totalEarned += state.perClick;
         state.clickQueue += 1;
 
-        const x = pointerEvent.clientX || (pointerEvent.touches && pointerEvent.touches[0] ? pointerEvent.touches[0].clientX : 0);
-        const y = pointerEvent.clientY || (pointerEvent.touches && pointerEvent.touches[0] ? pointerEvent.touches[0].clientY : 0);
-        if (x && y) spawnFloat(x, y, `+${formatShort(state.perClick)}`);
+        const x = pointerEvent.clientX || (pointerEvent.touches && pointerEvent.touches[0] ? pointerEvent.touches[0].clientX : window.innerWidth / 2);
+        const y = pointerEvent.clientY || (pointerEvent.touches && pointerEvent.touches[0] ? pointerEvent.touches[0].clientY : window.innerHeight / 2);
+        spawnFloat(x, y, `+${formatShort(state.perClick)}`);
       }
 
       function buyBuilding(index) {
