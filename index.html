@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cookie Clicker Ultra</title>
+  <style>
+    :root {
+      --bg1: #3b1d0f;
+      --bg2: #f2c14e;
+      --panel: rgba(30, 18, 10, 0.85);
+      --gold: #ffd75a;
+      --cream: #fff4d6;
+      --accent: #9dff6a;
+      --cookie: #d9862c;
+      --brown: #6a3f1d;
+      --dark: #1e120d;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(135deg, var(--bg1), #5a2d10 40%, #7c4315);
+      color: var(--cream);
+      user-select: none;
+      overflow: hidden;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: stretch;
+    }
+
+    .game {
+      width: 100%;
+      max-width: 1400px;
+      height: 100vh;
+      display: flex;
+      background: rgba(0,0,0,0.08);
+    }
+
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+      background: linear-gradient(135deg, rgba(238,176,71,0.12), rgba(255,255,255,0.04));
+      overflow: hidden;
+      position: relative;
+    }
+
+    .stats {
+      position: absolute;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      justify-content: center;
+      width: 90%;
+      max-width: 700px;
+    }
+
+    .stat {
+      background: rgba(25, 15, 8, 0.6);
+      border: 2px solid rgba(255, 215, 90, 0.7);
+      border-radius: 12px;
+      padding: 10px 16px;
+      min-width: 160px;
+      text-align: center;
+      box-shadow: 0 0 18px rgba(255, 215, 90, 0.18);
+    }
+
+    .label {
+      display: block;
+      font-size: 12px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #ebd7a7;
+      margin-bottom: 4px;
+    }
+
+    .value {
+      font-size: clamp(18px, 2vw, 32px);
+      font-weight: 700;
+      color: var(--gold);
+      font-family: "Consolas", "Courier New", monospace;
+      text-shadow: 0 0 12px rgba(255, 215, 90, 0.35);
+    }
+
+    .cookie-wrap {
+      margin-top: 82px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+    }
+
+    .cookie {
+      width: min(42vw, 320px);
+      height: min(42vw, 320px);
+      max-width: 320px;
+      max-height: 320px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #ffe699 0%, #ffd05c 18%, var(--cookie) 42%, #b86621 70%, #7a3d17 100%);
+      border: 8px solid rgba(120, 70, 30, 0.8);
+      box-shadow: 
+        0 0 30px rgba(255, 193, 56, 0.7),
+        inset -16px -18px 26px rgba(77, 35, 9, 0.36),
+        inset 18px 16px 24px rgba(255, 244, 196, 0.35);
+      display: grid;
+      place-items: center;
+      font-size: clamp(108px, 18vw, 150px);
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.05s ease, filter 0.08s ease, box-shadow 0.08s ease;
+      touch-action: manipulation;
+      will-change: transform, box-shadow, filter;
+      position: relative;
+    }
+
+    .cookie:active {
+      transform: scale(0.96);
+      filter: brightness(1.08);
+      box-shadow: 
+        0 0 42px rgba(255, 193, 56, 0.9),
+        inset -18px -18px 26px rgba(77, 35, 9, 0.5),
+        inset 18px 16px 24px rgba(255, 244, 196, 0.4);
+    }
+
+    .cookie::before {
+      content: "";
+      position: absolute;
+      inset: 18% 22% auto auto;
+      width: 20%;
+      height: 20%;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.18);
+      filter: blur(1px);
+    }
+
+    .cps {
+      font-size: clamp(16px, 2vw, 26px);
+      font-weight: 700;
+      color: var(--accent);
+      font-family: "Consolas", "Courier New", monospace;
+      text-shadow: 0 0 12px rgba(157, 255, 106, 0.25);
+    }
+
+    .sidebar {
+      width: min(30vw, 390px);
+      min-width: 280px;
+      background: rgba(29, 18, 12, 0.9);
+      border-left: 3px solid rgba(255, 215, 90, 0.6);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .sidebar-header {
+      padding: 18px 16px 14px;
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: 1.2px;
+      color: var(--gold);
+      text-transform: uppercase;
+      text-align: center;
+      background: rgba(0,0,0,0.2);
+      border-bottom: 2px solid rgba(255, 215, 90, 0.5);
+    }
+
+    .side-section {
+      padding: 16px 14px 12px;
+      border-bottom: 1px solid rgba(255, 215, 90, 0.3);
+    }
+
+    .section-title {
+      color: #f8d98b;
+      font-size: 12px;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      font-weight: 700;
+    }
+
+    .upgrade-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .upgrade {
+      background: rgba(255, 215, 90, 0.06);
+      border: 2px solid rgba(255, 215, 90, 0.55);
+      border-radius: 10px;
+      padding: 10px 12px;
+      cursor: pointer;
+      transition: transform 0.08s ease, border-color 0.12s ease, background 0.12s ease;
+      box-shadow: inset 0 0 0 rgba(0,0,0,0);
+    }
+
+    .upgrade:hover {
+      transform: translateX(-2px);
+      border-color: rgba(157, 255, 106, 0.8);
+      background: rgba(157, 255, 106, 0.08);
+    }
+
+    .upgrade.affordable {
+      border-color: rgba(157, 255, 106, 0.9);
+      background: rgba(157, 255, 106, 0.12);
+      box-shadow: 0 0 12px rgba(157, 255, 106, 0.18);
+    }
+
+    .upgrade-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--cream);
+      margin-bottom: 4px;
+    }
+
+    .upgrade-cost {
+      font-size: 12px;
+      color: var(--gold);
+      font-family: "Consolas", "Courier New", monospace;
+      margin-bottom: 3px;
+    }
+
+    .upgrade-effect {
+      font-size: 12px;
+      color: #c9c0ad;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px 10px;
+      font-size: 13px;
+    }
+
+    .stat-key {
+      color: #e8d3a2;
+    }
+
+    .stat-value-small {
+      color: var(--gold);
+      font-family: "Consolas", "Courier New", monospace;
+      text-align: right;
+    }
+
+    .reset-btn {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid rgba(255, 215, 90, 0.7);
+      border-radius: 10px;
+      background: linear-gradient(135deg, #852a1b, #9f3a1d);
+      color: white;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    .floating {
+      position: fixed;
+      left: 0;
+      top: 0;
+      font-size: clamp(18px, 2vw, 32px);
+      color: var(--gold);
+      text-shadow: 0 0 12px rgba(255, 215, 90, 0.5);
+      font-weight: 800;
+      font-family: "Consolas", "Courier New", monospace;
+      pointer-events: none;
+      z-index: 9999;
+      user-select: none;
+      white-space: nowrap;
+      will-change: transform, opacity;
+    }
+
+    @media (max-width: 900px) {
+      .game {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        min-width: 0;
+        max-height: 42vh;
+        border-left: none;
+        border-top: 3px solid rgba(255, 215, 90, 0.6);
+      }
+
+      .main {
+        min-height: 58vh;
+      }
+
+      .cookie {
+        width: min(58vw, 260px);
+        height: min(58vw, 260px);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="game">
+    <div class="main">
+      <div class="stats">
+        <div class="stat">
+          <span class="label">Cookies</span>
+          <span id="cookies" class="value">0</span>
+        </div>
+        <div class="stat">
+          <span class="label">Total Clicks</span>
+          <span id="totalClicks" class="value">0</span>
+        </div>
+        <div class="stat">
+          <span class="label">CPS</span>
+          <span id="cps" class="value">0</span>
+        </div>
+      </div>
+
+      <div class="cookie-wrap">
+        <div id="cookie" class="cookie" aria-label="Cookie clicker" title="Click me!">🍪</div>
+        <div id="cpsLabel" class="cps">Cookies per second: 0</div>
+      </div>
+    </div>
+
+    <aside class="sidebar">
+      <div class="sidebar-header">Upgrades</div>
+
+      <div class="side-section">
+        <div class="section-title">Stats</div>
+        <div class="stats-grid">
+          <div class="stat-key">Total Earned</div>
+          <div id="totalEarned" class="stat-value-small">0</div>
+
+          <div class="stat-key">Per Click</div>
+          <div id="perClick" class="stat-value-small">1</div>
+
+          <div class="stat-key">Peak CPS</div>
+          <div id="peakCps" class="stat-value-small">0</div>
+        </div>
+      </div>
+
+      <div class="side-section">
+        <div class="section-title">Buildings</div>
+        <div id="upgradeList" class="upgrade-list"></div>
+      </div>
+
+      <div class="side-section">
+        <button id="resetBtn" class="reset-btn">Reset</button>
+      </div>
+    </aside>
+  </div>
+
+  <script>
+    (() => {
+      const state = {
+        cookies: 0,
+        totalClicks: 0,
+        totalEarned: 0,
+        perClick: 1,
+        cps: 0,
+        peakCps: 0,
+        clickQueue: 0,
+        lastFrame: performance.now(),
+        useHighPrecision: false,
+        buildings: [
+          { name: 'Cursor', baseCost: 15, cps: 0.1, owned: 0 },
+          { name: 'Grandma', baseCost: 100, cps: 1, owned: 0 },
+          { name: 'Farm', baseCost: 1100, cps: 8, owned: 0 },
+          { name: 'Bank', baseCost: 12000, cps: 47, owned: 0 },
+          { name: 'Factory', baseCost: 130000, cps: 260, owned: 0 },
+          { name: 'Temple', baseCost: 1400000, cps: 1400, owned: 0 },
+          { name: 'Portal', baseCost: 20000000, cps: 7800, owned: 0 }
+        ]
+      };
+
+      const els = {
+        cookies: document.getElementById('cookies'),
+        totalClicks: document.getElementById('totalClicks'),
+        cps: document.getElementById('cps'),
+        cpsLabel: document.getElementById('cpsLabel'),
+        totalEarned: document.getElementById('totalEarned'),
+        perClick: document.getElementById('perClick'),
+        peakCps: document.getElementById('peakCps'),
+        upgradeList: document.getElementById('upgradeList'),
+        cookie: document.getElementById('cookie'),
+        resetBtn: document.getElementById('resetBtn')
+      };
+
+      function formatShort(n) {
+        if (!Number.isFinite(n)) return '0';
+        const abs = Math.abs(n);
+        if (abs < 1000) return Math.floor(n).toString();
+
+        const units = ['', 'K', 'M', 'B', 'T', 'Qa', 'Qi', 'Sx', 'Sp', 'Oc'];
+        let unit = 0;
+        let value = abs;
+
+        while (value >= 1000 && unit < units.length - 1) {
+          value /= 1000;
+          unit++;
+        }
+
+        const text = value >= 100 ? value.toFixed(0) : value.toFixed(2).replace(/\.00$/, '').replace(/(\.\d)0$/, '$1');
+        return text + units[unit];
+      }
+
+      function getCost(b) {
+        return Math.floor(b.baseCost * Math.pow(1.15, b.owned));
+      }
+
+      function renderUpgrades() {
+        els.upgradeList.innerHTML = '';
+
+        state.buildings.forEach((b, index) => {
+          const cost = getCost(b);
+          const affordable = state.cookies >= cost;
+          const div = document.createElement('div');
+          div.className = 'upgrade' + (affordable ? ' affordable' : '');
+          div.innerHTML = `
+            <div class="upgrade-name">${b.name} ×${b.owned}</div>
+            <div class="upgrade-cost">Cost: ${formatShort(cost)}</div>
+            <div class="upgrade-effect">+${formatShort(b.cps)} CPS</div>
+          `;
+          div.addEventListener('click', () => buyBuilding(index));
+          els.upgradeList.appendChild(div);
+        });
+      }
+
+      function updateDisplay() {
+        els.cookies.textContent = formatShort(state.cookies);
+        els.totalClicks.textContent = formatShort(state.totalClicks);
+        els.cps.textContent = formatShort(state.cps);
+        els.cpsLabel.textContent = `Cookies per second: ${formatShort(state.cps)}`;
+        els.totalEarned.textContent = formatShort(state.totalEarned);
+        els.perClick.textContent = formatShort(state.perClick);
+        els.peakCps.textContent = formatShort(state.peakCps);
+        renderUpgrades();
+      }
+
+      function spawnFloat(x, y, text) {
+        const el = document.createElement('div');
+        el.className = 'floating';
+        el.textContent = text;
+        el.style.left = x + 'px';
+        el.style.top = y + 'px';
+        document.body.appendChild(el);
+
+        const start = performance.now();
+        function frame(now) {
+          const t = (now - start) / 600;
+          el.style.transform = `translate(0px, ${-t * 120}px)`;
+          el.style.opacity = String(1 - t);
+          if (t < 1) {
+            requestAnimationFrame(frame);
+          } else {
+            el.remove();
+          }
+        }
+        requestAnimationFrame(frame);
+      }
+
+      function processClick(pointerEvent) {
+        state.totalClicks += 1;
+        state.cookies += state.perClick;
+        state.totalEarned += state.perClick;
+        state.clickQueue += 1;
+
+        const x = pointerEvent.clientX || (pointerEvent.touches && pointerEvent.touches[0] ? pointerEvent.touches[0].clientX : 0);
+        const y = pointerEvent.clientY || (pointerEvent.touches && pointerEvent.touches[0] ? pointerEvent.touches[0].clientY : 0);
+        if (x && y) spawnFloat(x, y, `+${formatShort(state.perClick)}`);
+      }
+
+      function buyBuilding(index) {
+        const b = state.buildings[index];
+        const cost = getCost(b);
+        if (state.cookies < cost) return;
+
+        state.cookies -= cost;
+        b.owned += 1;
+        state.cps += b.cps;
+        if (state.cps > state.peakCps) state.peakCps = state.cps;
+        updateDisplay();
+      }
+
+      function saveGame() {
+        const payload = {
+          cookies: state.cookies,
+          totalClicks: state.totalClicks,
+          totalEarned: state.totalEarned,
+          perClick: state.perClick,
+          cps: state.cps,
+          peakCps: state.peakCps,
+          buildings: state.buildings.map(b => ({ owned: b.owned }))
+        };
+        localStorage.setItem('cookie-clicker-ultra-save', JSON.stringify(payload));
+      }
+
+      function loadGame() {
+        try {
+          const raw = localStorage.getItem('cookie-clicker-ultra-save');
+          if (!raw) return;
+          const saved = JSON.parse(raw);
+          if (!saved) return;
+
+          state.cookies = Number(saved.cookies) || 0;
+          state.totalClicks = Number(saved.totalClicks) || 0;
+          state.totalEarned = Number(saved.totalEarned) || 0;
+          state.perClick = Number(saved.perClick) || 1;
+          state.cps = Number(saved.cps) || 0;
+          state.peakCps = Number(saved.peakCps) || 0;
+
+          if (Array.isArray(saved.buildings)) {
+            saved.buildings.forEach((entry, i) => {
+              if (state.buildings[i]) state.buildings[i].owned = Number(entry.owned) || 0;
+            });
+          }
+
+          updateDisplay();
+        } catch (e) {
+          console.warn('Save load failed', e);
+        }
+      }
+
+      function resetGame() {
+        if (!confirm('Reset the game?')) return;
+        state.cookies = 0;
+        state.totalClicks = 0;
+        state.totalEarned = 0;
+        state.perClick = 1;
+        state.cps = 0;
+        state.peakCps = 0;
+        state.buildings.forEach(b => { b.owned = 0; });
+        localStorage.removeItem('cookie-clicker-ultra-save');
+        updateDisplay();
+      }
+
+      function loop(now) {
+        const dt = (now - state.lastFrame) / 1000;
+        state.lastFrame = now;
+
+        if (dt > 0) {
+          state.cookies += state.cps * dt;
+          state.totalEarned += state.cps * dt;
+          if (state.cps > state.peakCps) state.peakCps = state.cps;
+          updateDisplay();
+        }
+
+        requestAnimationFrame(loop);
+      }
+
+      els.cookie.addEventListener('pointerdown', (e) => {
+        processClick(e);
+        updateDisplay();
+      }, { passive: true });
+
+      els.cookie.addEventListener('touchstart', (e) => {
+        processClick(e);
+        updateDisplay();
+      }, { passive: true });
+
+      els.resetBtn.addEventListener('click', resetGame);
+
+      window.addEventListener('beforeunload', saveGame);
+      window.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'hidden') saveGame();
+      });
+
+      loadGame();
+      updateDisplay();
+      requestAnimationFrame(loop);
+    })();
+  </script>
+</body>
+</html>
