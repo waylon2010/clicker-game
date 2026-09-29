@@ -78,6 +78,7 @@
       justify-content: center;
       width: 90%;
       max-width: 700px;
+      z-index: 10;
     }
 
     .stat {
@@ -178,8 +179,8 @@
     }
 
     .sidebar-header {
-      padding: 18px 16px 14px;
-      font-size: 22px;
+      padding: 12px 16px;
+      font-size: 18px;
       font-weight: 800;
       letter-spacing: 1.2px;
       color: var(--gold);
@@ -187,6 +188,42 @@
       text-align: center;
       background: rgba(0,0,0,0.2);
       border-bottom: 2px solid rgba(255, 215, 90, 0.5);
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .tab-buttons {
+      display: flex;
+      gap: 4px;
+      padding: 8px;
+      background: rgba(0,0,0,0.1);
+      border-bottom: 1px solid rgba(255, 215, 90, 0.3);
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 8px;
+      border: 2px solid rgba(255, 215, 90, 0.4);
+      background: rgba(255, 215, 90, 0.05);
+      color: var(--gold);
+      cursor: pointer;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      background: rgba(255, 215, 90, 0.2);
+      border-color: rgba(157, 255, 106, 0.9);
+      color: var(--accent);
+    }
+
+    .tab-btn:hover {
+      background: rgba(255, 215, 90, 0.15);
     }
 
     .side-section {
@@ -194,12 +231,19 @@
       border-bottom: 1px solid rgba(255, 215, 90, 0.3);
       overflow-y: auto;
       flex: 1;
+      display: none;
+    }
+
+    .side-section.active {
+      display: block;
     }
 
     .side-section:last-of-type {
       flex: 0;
       overflow: visible;
       max-height: none;
+      border-bottom: none;
+      padding: 12px 14px;
     }
 
     .section-title {
@@ -211,7 +255,7 @@
       font-weight: 700;
     }
 
-    .upgrade-list {
+    .upgrade-list, .achievement-list {
       display: flex;
       flex-direction: column;
       gap: 10px;
@@ -239,6 +283,13 @@
       box-shadow: 0 0 12px rgba(157, 255, 106, 0.18);
     }
 
+    .upgrade.purchased {
+      opacity: 0.6;
+      pointer-events: none;
+      border-color: rgba(100, 200, 100, 0.7);
+      background: rgba(100, 200, 100, 0.1);
+    }
+
     .upgrade-name {
       font-size: 15px;
       font-weight: 700;
@@ -256,6 +307,62 @@
     .upgrade-effect {
       font-size: 12px;
       color: #c9c0ad;
+    }
+
+    .achievement {
+      background: rgba(255, 215, 90, 0.08);
+      border: 2px solid rgba(255, 215, 90, 0.4);
+      border-radius: 10px;
+      padding: 12px;
+      cursor: default;
+      transition: all 0.2s;
+      position: relative;
+    }
+
+    .achievement.unlocked {
+      border-color: rgba(157, 255, 106, 0.9);
+      background: rgba(157, 255, 106, 0.15);
+      box-shadow: 0 0 15px rgba(157, 255, 106, 0.3);
+    }
+
+    .achievement.locked {
+      opacity: 0.5;
+    }
+
+    .achievement-header {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+
+    .achievement-icon {
+      font-size: 24px;
+      min-width: 24px;
+      text-align: center;
+    }
+
+    .achievement-info {
+      flex: 1;
+    }
+
+    .achievement-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--cream);
+      margin-bottom: 2px;
+    }
+
+    .achievement-desc {
+      font-size: 11px;
+      color: #aaa;
+    }
+
+    .achievement-progress {
+      font-size: 10px;
+      color: var(--gold);
+      font-family: "Consolas", "Courier New", monospace;
+      margin-top: 4px;
     }
 
     .stats-grid {
@@ -304,6 +411,43 @@
       user-select: none;
       white-space: nowrap;
       will-change: transform, opacity;
+    }
+
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(157, 255, 106, 0.9);
+      color: #000;
+      padding: 16px 20px;
+      border-radius: 10px;
+      font-weight: 700;
+      z-index: 10000;
+      animation: slideIn 0.3s ease, slideOut 0.3s ease 2.7s;
+      max-width: 300px;
+      box-shadow: 0 0 20px rgba(157, 255, 106, 0.5);
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(400px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideOut {
+      from {
+        transform: translateX(0);
+        opacity: 1;
+      }
+      to {
+        transform: translateX(400px);
+        opacity: 0;
+      }
     }
 
     .sound-toggle {
@@ -373,8 +517,8 @@
           <span id="cookies" class="value">0</span>
         </div>
         <div class="stat">
-          <span class="label">Total Clicks</span>
-          <span id="totalClicks" class="value">0</span>
+          <span class="label">Per Click</span>
+          <span id="perClick" class="value">1</span>
         </div>
         <div class="stat">
           <span class="label">CPS</span>
@@ -391,16 +535,36 @@
     </div>
 
     <aside class="sidebar">
-      <div class="sidebar-header">Upgrades</div>
+      <div class="sidebar-header">🎮 Menu</div>
+
+      <div class="tab-buttons">
+        <button class="tab-btn active" data-tab="store">Store</button>
+        <button class="tab-btn" data-tab="upgrades">Upgrades</button>
+        <button class="tab-btn" data-tab="achievements">Achievements</button>
+      </div>
+
+      <div class="side-section active" id="store-tab">
+        <div class="section-title">Buildings</div>
+        <div id="upgradeList" class="upgrade-list"></div>
+      </div>
+
+      <div class="side-section" id="upgrades-tab">
+        <div class="section-title">Click Power</div>
+        <div id="clickUpgradesList" class="upgrade-list"></div>
+      </div>
+
+      <div class="side-section" id="achievements-tab">
+        <div class="section-title">Your Achievements</div>
+        <div id="achievementsList" class="achievement-list"></div>
+      </div>
 
       <div class="side-section">
-        <div class="section-title">Stats</div>
         <div class="stats-grid">
           <div class="stat-key">Total Earned</div>
           <div id="totalEarned" class="stat-value-small">0</div>
 
-          <div class="stat-key">Per Click</div>
-          <div id="perClick" class="stat-value-small">1</div>
+          <div class="stat-key">Total Clicks</div>
+          <div id="totalClicks" class="stat-value-small">0</div>
 
           <div class="stat-key">Peak CPS</div>
           <div id="peakCps" class="stat-value-small">0</div>
@@ -408,15 +572,7 @@
           <div class="stat-key">Buildings</div>
           <div id="totalBuildings" class="stat-value-small">0</div>
         </div>
-      </div>
-
-      <div class="side-section">
-        <div class="section-title">Buildings</div>
-        <div id="upgradeList" class="upgrade-list"></div>
-      </div>
-
-      <div class="side-section">
-        <button id="resetBtn" class="reset-btn">Reset Game</button>
+        <button id="resetBtn" class="reset-btn" style="margin-top: 12px;">Reset Game</button>
       </div>
     </aside>
   </div>
@@ -452,9 +608,7 @@
           
           osc.start(now);
           osc.stop(now + duration / 1000);
-        } catch (e) {
-          // Audio failed silently
-        }
+        } catch (e) {}
       }
 
       const state = {
@@ -464,8 +618,6 @@
         perClick: 1,
         cps: 0,
         peakCps: 0,
-        clickQueue: 0,
-        lastFrame: performance.now(),
         buildings: [
           { name: 'Cursor', baseCost: 15, cps: 0.1, owned: 0 },
           { name: 'Grandma', baseCost: 100, cps: 1, owned: 0 },
@@ -476,6 +628,29 @@
           { name: 'Portal', baseCost: 20000000, cps: 7800, owned: 0 },
           { name: 'Dimension', baseCost: 330000000, cps: 44000, owned: 0 },
           { name: 'Supernova', baseCost: 5100000000, cps: 260000, owned: 0 }
+        ],
+        clickUpgrades: [
+          { name: 'Better Fingers', cost: 100, effect: 1, owned: false, desc: '+1 per click' },
+          { name: 'Cursor Force', cost: 500, effect: 2, owned: false, desc: '+2 per click' },
+          { name: 'Iron Fingers', cost: 2000, effect: 5, owned: false, desc: '+5 per click' },
+          { name: 'Titanium Fingers', cost: 10000, effect: 10, owned: false, desc: '+10 per click' },
+          { name: 'Golden Touch', cost: 50000, effect: 25, owned: false, desc: '+25 per click' },
+          { name: 'Quantum Fingers', cost: 250000, effect: 50, owned: false, desc: '+50 per click' },
+          { name: 'Divine Intervention', cost: 1000000, effect: 100, owned: false, desc: '+100 per click' }
+        ],
+        achievements: [
+          { id: 'first', name: 'First Bite', icon: '🍪', desc: 'Bake your first cookie', unlocked: false, check: () => state.totalClicks >= 1 },
+          { id: 'hundred', name: 'Centennial', icon: '💯', desc: 'Earn 100 cookies', unlocked: false, check: () => state.totalEarned >= 100, progress: () => Math.min(100, state.totalEarned) },
+          { id: 'thousand', name: 'Millionaire', icon: '💰', desc: 'Earn 1,000 cookies', unlocked: false, check: () => state.totalEarned >= 1000, progress: () => Math.min(1000, state.totalEarned) },
+          { id: 'million', name: 'Billionaire', icon: '🏦', desc: 'Earn 1,000,000 cookies', unlocked: false, check: () => state.totalEarned >= 1000000, progress: () => Math.min(1000000, state.totalEarned) },
+          { id: 'rapid', name: 'Rapid Clicker', icon: '⚡', desc: 'Click 100 times', unlocked: false, check: () => state.totalClicks >= 100, progress: () => Math.min(100, state.totalClicks) },
+          { id: 'frenzy', name: 'Click Frenzy', icon: '🔥', desc: 'Click 1,000 times', unlocked: false, check: () => state.totalClicks >= 1000, progress: () => Math.min(1000, state.totalClicks) },
+          { id: 'grandma', name: 'Grandma Approved', icon: '👵', desc: 'Own 5 Grandmas', unlocked: false, check: () => state.buildings[1].owned >= 5, progress: () => Math.min(5, state.buildings[1].owned) },
+          { id: 'farm', name: 'Farm Fresh', icon: '🌾', desc: 'Own 10 Farms', unlocked: false, check: () => state.buildings[2].owned >= 10, progress: () => Math.min(10, state.buildings[2].owned) },
+          { id: 'cps100', name: 'Steady Producer', icon: '📈', desc: 'Reach 100 CPS', unlocked: false, check: () => state.cps >= 100, progress: () => Math.min(100, state.cps) },
+          { id: 'cps1000', name: 'Production Master', icon: '🏭', desc: 'Reach 1,000 CPS', unlocked: false, check: () => state.cps >= 1000, progress: () => Math.min(1000, state.cps) },
+          { id: 'powerup', name: 'Finger Boost', icon: '💪', desc: 'Buy a Click Power upgrade', unlocked: false, check: () => state.clickUpgrades.some(u => u.owned) },
+          { id: 'allpower', name: 'Ultimate Fingers', icon: '🌟', desc: 'Buy all Click Power upgrades', unlocked: false, check: () => state.clickUpgrades.every(u => u.owned) }
         ]
       };
 
@@ -489,6 +664,8 @@
         peakCps: document.getElementById('peakCps'),
         totalBuildings: document.getElementById('totalBuildings'),
         upgradeList: document.getElementById('upgradeList'),
+        clickUpgradesList: document.getElementById('clickUpgradesList'),
+        achievementsList: document.getElementById('achievementsList'),
         cookie: document.getElementById('cookie'),
         resetBtn: document.getElementById('resetBtn'),
         soundToggle: document.getElementById('soundToggle'),
@@ -521,9 +698,26 @@
         return state.buildings.reduce((sum, b) => sum + b.owned, 0);
       }
 
+      function showNotification(text, icon = '✓') {
+        const notif = document.createElement('div');
+        notif.className = 'notification';
+        notif.textContent = `${icon} ${text}`;
+        document.body.appendChild(notif);
+        setTimeout(() => notif.remove(), 3000);
+      }
+
+      function checkAchievements() {
+        state.achievements.forEach(ach => {
+          if (!ach.unlocked && ach.check()) {
+            ach.unlocked = true;
+            showNotification(`Achievement: ${ach.name}!`, ach.icon);
+            playSound(1000, 150);
+          }
+        });
+      }
+
       function renderUpgrades() {
         els.upgradeList.innerHTML = '';
-
         state.buildings.forEach((b, index) => {
           const cost = getCost(b);
           const affordable = state.cookies >= cost;
@@ -539,6 +733,42 @@
         });
       }
 
+      function renderClickUpgrades() {
+        els.clickUpgradesList.innerHTML = '';
+        state.clickUpgrades.forEach((upg, index) => {
+          const affordable = state.cookies >= upg.cost && !upg.owned;
+          const div = document.createElement('div');
+          div.className = 'upgrade' + (affordable ? ' affordable' : '') + (upg.owned ? ' purchased' : '');
+          div.innerHTML = `
+            <div class="upgrade-name">${upg.name}</div>
+            <div class="upgrade-cost">Cost: ${formatShort(upg.cost)}</div>
+            <div class="upgrade-effect">${upg.desc}${upg.owned ? ' ✓' : ''}</div>
+          `;
+          div.addEventListener('click', () => buyClickUpgrade(index));
+          els.clickUpgradesList.appendChild(div);
+        });
+      }
+
+      function renderAchievements() {
+        els.achievementsList.innerHTML = '';
+        state.achievements.forEach(ach => {
+          const div = document.createElement('div');
+          div.className = 'achievement' + (ach.unlocked ? ' unlocked' : ' locked');
+          const progress = ach.progress ? ` (${formatShort(ach.progress())} / ${ach.id === 'allpower' ? '7' : '?'})` : '';
+          div.innerHTML = `
+            <div class="achievement-header">
+              <div class="achievement-icon">${ach.icon}</div>
+              <div class="achievement-info">
+                <div class="achievement-name">${ach.name}</div>
+                <div class="achievement-desc">${ach.desc}</div>
+                ${ach.progress ? `<div class="achievement-progress">${progress}</div>` : ''}
+              </div>
+            </div>
+          `;
+          els.achievementsList.appendChild(div);
+        });
+      }
+
       function updateDisplay() {
         els.cookies.textContent = formatShort(state.cookies);
         els.totalClicks.textContent = formatShort(state.totalClicks);
@@ -549,6 +779,8 @@
         els.peakCps.textContent = formatShort(state.peakCps);
         els.totalBuildings.textContent = getTotalBuildings();
         renderUpgrades();
+        renderClickUpgrades();
+        renderAchievements();
       }
 
       function spawnFloat(x, y, text) {
@@ -577,13 +809,13 @@
         state.totalClicks += 1;
         state.cookies += state.perClick;
         state.totalEarned += state.perClick;
-        state.clickQueue += 1;
 
-        const x = pointerEvent.clientX || (pointerEvent.touches && pointerEvent.touches[0] ? pointerEvent.touches[0].clientX : window.innerWidth / 2);
-        const y = pointerEvent.clientY || (pointerEvent.touches && pointerEvent.touches[0] ? pointerEvent.touches[0].clientY : window.innerHeight / 2);
+        const x = pointerEvent.clientX || (pointerEvent.touches?.[0]?.clientX || window.innerWidth / 2);
+        const y = pointerEvent.clientY || (pointerEvent.touches?.[0]?.clientY || window.innerHeight / 2);
         
         spawnFloat(x, y, `+${formatShort(state.perClick)}`);
         playSound(800, 50);
+        checkAchievements();
       }
 
       function buyBuilding(index) {
@@ -598,6 +830,22 @@
         
         playSound(1200, 100);
         updateDisplay();
+        checkAchievements();
+        saveGame();
+      }
+
+      function buyClickUpgrade(index) {
+        const upg = state.clickUpgrades[index];
+        if (upg.owned || state.cookies < upg.cost) return;
+
+        state.cookies -= upg.cost;
+        upg.owned = true;
+        state.perClick += upg.effect;
+        
+        playSound(1400, 150);
+        showNotification(`${upg.name} unlocked!`, '💪');
+        updateDisplay();
+        checkAchievements();
         saveGame();
       }
 
@@ -609,7 +857,9 @@
           perClick: state.perClick,
           cps: state.cps,
           peakCps: state.peakCps,
-          buildings: state.buildings.map(b => ({ owned: b.owned }))
+          buildings: state.buildings.map(b => ({ owned: b.owned })),
+          clickUpgrades: state.clickUpgrades.map(u => ({ owned: u.owned })),
+          achievements: state.achievements.map(a => ({ id: a.id, unlocked: a.unlocked }))
         };
         localStorage.setItem('cookie-clicker-ultra-save', JSON.stringify(payload));
       }
@@ -634,6 +884,19 @@
             });
           }
 
+          if (Array.isArray(saved.clickUpgrades)) {
+            saved.clickUpgrades.forEach((entry, i) => {
+              if (state.clickUpgrades[i]) state.clickUpgrades[i].owned = Boolean(entry.owned);
+            });
+          }
+
+          if (Array.isArray(saved.achievements)) {
+            saved.achievements.forEach(entry => {
+              const ach = state.achievements.find(a => a.id === entry.id);
+              if (ach) ach.unlocked = Boolean(entry.unlocked);
+            });
+          }
+
           updateDisplay();
         } catch (e) {
           console.warn('Save load failed', e);
@@ -649,14 +912,16 @@
         state.cps = 0;
         state.peakCps = 0;
         state.buildings.forEach(b => { b.owned = 0; });
+        state.clickUpgrades.forEach(u => { u.owned = false; });
+        state.achievements.forEach(a => { a.unlocked = false; });
         localStorage.removeItem('cookie-clicker-ultra-save');
         updateDisplay();
         playSound(400, 200);
       }
 
       function loop(now) {
-        const dt = (now - state.lastFrame) / 1000;
-        state.lastFrame = now;
+        const dt = (performance.now() - state.lastFrame) / 1000;
+        state.lastFrame = performance.now();
 
         if (dt > 0 && dt < 0.1) {
           state.cookies += state.cps * dt;
@@ -667,6 +932,16 @@
 
         requestAnimationFrame(loop);
       }
+
+      // Tab system
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+          document.querySelectorAll('.side-section').forEach(s => s.classList.remove('active'));
+          btn.classList.add('active');
+          document.getElementById(btn.dataset.tab + '-tab').classList.add('active');
+        });
+      });
 
       els.cookie.addEventListener('pointerdown', (e) => {
         processClick(e);
@@ -693,7 +968,6 @@
         if (document.visibilityState === 'hidden') saveGame();
       });
 
-      // Auto-save every 5 seconds
       setInterval(saveGame, 5000);
 
       loadGame();
